@@ -1,0 +1,38 @@
+// Import necessary libraries
+const express = require('express');
+const bodyParser = require('body-parser');
+const { check, validationResult } = require('express-validator');
+
+// Create express app
+const app = express();
+
+// Use body parser to access request body
+app.use(bodyParser.json());
+
+// Define validation rules for download input
+const downloadValidationRules = [
+  check('name').isLength({ min: 1 }).withMessage('Name cannot be empty'),
+  check('url').isURL().withMessage('Invalid URL'),
+  check('size').isNumeric({ min: 1 }).withMessage('Invalid size'),
+];
+
+// Handle download upload endpoint
+app.post('/uploads', downloadValidationRules, (req, res) => {
+  // Check for validation errors
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
+  // Verify download URL for safety
+  // Code to verify URL for safety can be added here
+
+  // Return success response
+  return res.status(200).json({ message: 'Upload successful' });
+});
+
+// Bind express app to port
+const port = process.env.PORT || 8000;
+app.listen(port, () => {
+  console.log(App listening on port ${port});
+});
